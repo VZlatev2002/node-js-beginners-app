@@ -1,7 +1,21 @@
-const http = require("http");
+const express = require("express");
+const bodyParser = require("body-parser");
+const path = require("path");
 
-const routes = require("./routes");
+const app = express();
 
-const server = http.createServer(routes.handler);
+app.set("view engine", "ejs");
+app.set("views", "views");
 
-server.listen(3000);
+const adminRoutes = require("./routes/admin");
+const shopRoutes = require("./routes/shop");
+const errorRoutes = require("./routes/error");
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "public")));
+
+app.use("/admin", adminRoutes.routes);
+app.use(shopRoutes);
+app.use(errorRoutes);
+
+app.listen(3000);
